@@ -122,9 +122,6 @@ export default function App() {
     setQuarterlySnapshots(snapshot);
     setResults(prev => prev.map(item => {
       const snap = snapshot[item.ticker];
-      const cur = getCurrencySymbol(item.currency || 'USD');
-      const livePrice = quotesRef.current[item.ticker]?.price || (item.epsEstimate ? item.epsEstimate * 25 : 120);
-
       if (!snap || snap.isLiveFeed !== true) {
         return {
           ...item,
