@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { getStockTechnicalMetrics } from '../data/technicalData';
 import { getMarketSessionInfo } from '../utils/marketSession';
+import { AEROSPACE_DEFENSE_COMPANIES, AEROSPACE_DEFENSE_TICKERS } from '../data/aerospaceDefenseData';
 
 interface JPMorganTableViewProps {
   results: QuarterlyResult[];
@@ -156,6 +157,11 @@ export const JPMorganTableView: React.FC<JPMorganTableViewProps> = ({
       CBRS: 'Semiconductors',
     };
 
+    const AEROSPACE_DEFENSE_TICKER_SET = new Set<string>(AEROSPACE_DEFENSE_TICKERS);
+    const AEROSPACE_DEFENSE_SUB_SECTOR_MAP: Record<string, string> = Object.fromEntries(
+      AEROSPACE_DEFENSE_TICKERS.map(t => [t, AEROSPACE_DEFENSE_COMPANIES[t].subSector])
+    );
+
     const HYPERSCALER_SUB_SECTOR_MAP: Record<string, string> = {
       GOOGL: 'Hyperscalers', MSFT: 'Hyperscalers', AMZN: 'Hyperscalers', ORCL: 'Hyperscalers', META: 'Hyperscalers',
       SPCX: 'Neo Clouds', NBIS: 'Neo Clouds', CRWV: 'Neo Clouds', IREN: 'Neo Clouds'
@@ -170,7 +176,7 @@ export const JPMorganTableView: React.FC<JPMorganTableViewProps> = ({
       if (seenTickers.has(r.ticker)) return;
       seenTickers.add(r.ticker);
 
-      const meta = TECH_COMPANIES[r.ticker] || SHOVEL_SELLERS_COMPANIES[r.ticker] || FINANCIAL_COMPANIES[r.ticker];
+      const meta = TECH_COMPANIES[r.ticker] || SHOVEL_SELLERS_COMPANIES[r.ticker] || FINANCIAL_COMPANIES[r.ticker] || AEROSPACE_DEFENSE_COMPANIES[r.ticker];
       const q = quotes[r.ticker] || (meta?.primaryListing ? quotes[meta.primaryListing] : undefined);
       let price = q ? q.price : (meta?.currentPrice || 0);
       const chg = q ? q.change : (meta ? (meta.currentPrice * (meta.dayChangePercent || 0)) / 100 : 0);
@@ -185,7 +191,10 @@ export const JPMorganTableView: React.FC<JPMorganTableViewProps> = ({
       let assetClass = 'US Mega-Cap Technology';
       let subSector: string | undefined = undefined;
 
-      if (HYPERSCALER_TICKERS.has(r.ticker) || r.sector === 'Hyperscalers & Neo Clouds' || meta?.sector === 'Hyperscalers & Neo Clouds') {
+      if (AEROSPACE_DEFENSE_TICKER_SET.has(r.ticker) || r.sector === 'Aerospace & Defense' || meta?.sector === 'Aerospace & Defense') {
+        assetClass = 'Aerospace & Defense';
+        subSector = r.subSector || meta?.subSector || AEROSPACE_DEFENSE_SUB_SECTOR_MAP[r.ticker];
+      } else if (HYPERSCALER_TICKERS.has(r.ticker) || r.sector === 'Hyperscalers & Neo Clouds' || meta?.sector === 'Hyperscalers & Neo Clouds') {
         assetClass = 'Hyperscalers & Neo Clouds';
         subSector = r.subSector || meta?.subSector || HYPERSCALER_SUB_SECTOR_MAP[r.ticker] || 'Hyperscalers';
       } else if (r.sector === 'The Shovel Sellers' || meta?.sector === 'The Shovel Sellers' || SHOVEL_SELLER_TICKERS.has(r.ticker)) {
