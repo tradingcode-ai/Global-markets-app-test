@@ -3269,7 +3269,7 @@ async function fetchYahooQuarterlySnapshot(normalized: string, quarterKey: strin
                 ((counts.strongBuy + counts.buy) / ratingTotal) >= 0.6 ? 'Buy' :
                 ((counts.sell + counts.strongSell) / ratingTotal) >= 0.6 ? 'Sell' : 'Hold'
               )
-            : 'Buy';
+            : undefined;
 
           const future = earningsTrend.filter((t: any) => ['0q', '+1q', '+2q'].includes(t.period));
           const next = earningsTrend.find((t: any) => t.period === '0q')
@@ -3398,7 +3398,7 @@ async function fetchYahooQuarterlySnapshot(normalized: string, quarterKey: strin
               || rawNumber(financial?.numberOfAnalystOpinions),
             isConvertedToUsd: needsUsdConversion,
             originalCurrency: analystCurrency,
-            revenueIsAnalystConsensus: true,
+            revenueIsAnalystConsensus: rawRevAvg !== undefined,
             isLiveFeed: true,
             conversionNote: needsUsdConversion
               ? `Yahoo Finance omzet- en EPS-consensus genormaliseerd van ${analystCurrency} naar USD; koersdoelen blijven in ${analystCurrency}.`
