@@ -5,6 +5,7 @@ import { TECH_COMPANIES } from '../data/earningsData';
 import { SHOVEL_SELLERS_COMPANIES, SHOVEL_SUB_SECTORS } from '../data/shovelSellersData';
 import { HYPERSCALER_COMPANIES, HYPERSCALER_SUB_SECTORS, HYPERSCALER_TICKERS } from '../data/hyperscalersData';
 import { FINANCIAL_COMPANIES } from '../data/financialsData';
+import { AEROSPACE_DEFENSE_COMPANIES, AEROSPACE_DEFENSE_TICKERS } from '../data/aerospaceDefenseData';
 import { getStockAnalystOutlooks } from '../data/analystCoverageData';
 import { StockLogo } from './StockLogo';
 import { 
