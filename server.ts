@@ -633,6 +633,8 @@ const YAHOO_SYMBOL_MAP: Record<string, string> = {
   'SX7P': 'EXV1.DE',
   // Hyperscalers & Neo Clouds — primary public listings
   'SPCX': 'SPCX',
+  'RKGRY': 'RNKGF',
+  'DRO': 'DRO.AX',
   'CRWV': 'CRWV',
   'NBIS': 'NBIS',
   'IREN': 'IREN'
