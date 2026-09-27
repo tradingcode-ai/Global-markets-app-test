@@ -3362,17 +3362,6 @@ async function fetchYahooQuarterlySnapshot(normalized: string, quarterKey: strin
               };
             });
 
-          if (outlooks.length === 0) {
-            outlooks = generateFallbackOutlooks(
-              normalized,
-              analystCurrency,
-              nextQuarterLabel,
-              rawEpsAvg,
-              rawRevAvg,
-              rawNumber(priceModule?.regularMarketPrice) || 150
-            );
-          }
-
           const resultPayload: QuarterlyAnalystOutlookPayload = {
             ticker: normalized,
             quarterKey,
@@ -3420,29 +3409,8 @@ async function fetchYahooQuarterlySnapshot(normalized: string, quarterKey: strin
     return quarterlyAnalystCache[normalized].data;
   }
 
-  // Institutional verified fallback when Yahoo is unavailable, throttled, or crumb expired
-  const reg = VERIFIED_EARNINGS_CALENDAR_REGISTRY[normalized];
-  const targetCur = isEuropeanFinancialTicker(normalized) ? 'EUR' : 'USD';
-  const nextQ = reg?.quarter || 'Q4 2026';
-  const epsVal = reg?.eps ?? 1.50;
-  const revVal = reg?.rev ?? 15.0;
+  // No synthetic analyst fallback. The client may use its persisted Yahoo snapshot.
 
-  const verifiedFallback: QuarterlyAnalystOutlookPayload = {
-    ticker: normalized,
-    quarterKey,
-    nextQuarterLabel: nextQ,
-    snapshotDate: new Date().toISOString(),
-    consensusRating: 'Buy',
-    recommendationCounts: { strongBuy: 25, buy: 18, hold: 4, sell: 1, strongSell: 0 },
-    nextQuarterEps: epsVal,
-    nextQuarterRevenue: revVal,
-    targetCurrency: targetCur,
-    analystsCount: 38,
-    revenueIsAnalystConsensus: true,
-    isLiveFeed: false,
-    outlooks: generateFallbackOutlooks(normalized, targetCur, nextQ, epsVal, revVal)
-  };
-  return verifiedFallback;
 }
 
 app.get('/api/quarterly-analyst-outlook', async (req, res) => {
