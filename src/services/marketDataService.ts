@@ -85,7 +85,15 @@ export function mergeAnalystSnapshots(
   live: Record<string, any>,
   stored: Record<string, any>
 ): Record<string, any> {
-  const merged: Record<string, any> = { ...stored };
+  const merged: Record<string, any> = {};
+  for (const [ticker, snapshot] of Object.entries(stored || {})) {
+    if (!snapshot || snapshot.isLiveFeed !== true) continue;
+    merged[ticker] = {
+      ...snapshot,
+      dataSource: 'Yahoo Finance',
+      isCachedSnapshot: true
+    };
+  }
   for (const [ticker, snapshot] of Object.entries(live || {})) {
     if (!snapshot || snapshot.isLiveFeed !== true) continue;
     merged[ticker] = {
