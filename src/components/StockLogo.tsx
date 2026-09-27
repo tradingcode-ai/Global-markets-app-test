@@ -126,7 +126,7 @@ const OFFICIAL_DOMAINS: Record<string, string> = {
   LMT: 'lockheedmartin.com',
   RKLB: 'rocketlabusa.com',
   DRS: 'leonardodrs.com',
-  RKGRY: 'rheinmetall.com',
+  RKGRY: 'renk-group.com',
   RCAT: 'redcat.red',
   RYCEY: 'rolls-royce.com',
   EADSY: 'airbus.com',
