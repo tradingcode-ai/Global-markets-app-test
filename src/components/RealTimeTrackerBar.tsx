@@ -7,6 +7,7 @@ import { SHOVEL_SELLERS_COMPANIES } from '../data/shovelSellersData';
 import { HYPERSCALER_TICKERS } from '../data/hyperscalersData';
 import { TECH_COMPANIES } from '../data/earningsData';
 import { FINANCIAL_COMPANIES } from '../data/financialsData';
+import { AEROSPACE_DEFENSE_COMPANIES, AEROSPACE_DEFENSE_TICKERS } from '../data/aerospaceDefenseData';
 import { SOVEREIGN_BONDS_DATA } from '../data/bondsData';
 import { COMMODITIES_DATA } from '../data/commoditiesData';
 import { getCurrencySymbol } from '../utils/formatters';
@@ -61,13 +62,13 @@ const EU_FINANCIAL_TICKERS = [
   'BCS', 'BARC', 'HSBC', 'ABN', 'ING', 'RABO', 'BNP', 'GLE', 'UBS', 'SAN', 'BBVA', 'SX7P'
 ];
 
-// 6. Global Energy & Industrial Commodities
+// 6. Aerospace & Defense\nconst AEROSPACE_DEFENSE_TICKERS_LIST = Array.from(AEROSPACE_DEFENSE_TICKERS);\n\n// 7. Global Energy & Industrial Commodities
 const COMMODITY_TICKERS = [
   'TTF', 'NG', 'JKM', 'WTI', 'BRENT', 'MURBAN', 'MRBC', 'OQD', 'INE-SC', 
   'RBOB', 'HO', 'GOLD', 'SILVER', 'COPPER', 'URANIUM', 'LITHIUM', 'WHEAT', 'CORN'
 ];
 
-// 7. Sovereign Benchmark Government Yields
+// 8. Sovereign Benchmark Government Yields
 const GOV_BOND_TICKERS = [
   'US10Y', 'US2Y', 'US30Y', 'US30YFRM', 'DE10Y', 'DE30Y', 
   'JP10Y', 'JP30Y', 'GB10Y', 'GB30Y', 'FR10Y', 'FR30Y', 
