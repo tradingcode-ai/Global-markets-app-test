@@ -57,3 +57,43 @@ export async function fetchQuarterlyAnalystOutlook(symbols?: string[]): Promise<
     return { data: {} };
   }
 }
+
+const ANALYST_SNAPSHOT_STORAGE_KEY = 'global-markets-analyst-snapshots-v1';
+
+export function getStoredAnalystSnapshots(): Record<string, any> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.localStorage.getItem(ANALYST_SNAPSHOT_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveAnalystSnapshots(snapshots: Record<string, any>): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(ANALYST_SNAPSHOT_STORAGE_KEY, JSON.stringify(snapshots));
+  } catch {
+    // Ignore unavailable/full browser storage.
+  }
+}
+
+export function mergeAnalystSnapshots(
+  live: Record<string, any>,
+  stored: Record<string, any>
+): Record<string, any> {
+  const merged: Record<string, any> = { ...stored };
+  for (const [ticker, snapshot] of Object.entries(live || {})) {
+    if (!snapshot || snapshot.isLiveFeed !== true) continue;
+    merged[ticker] = {
+      ...snapshot,
+      snapshotSavedAt: new Date().toISOString(),
+      dataSource: 'Yahoo Finance',
+      isCachedSnapshot: false
+    };
+  }
+  return merged;
+}
