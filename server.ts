@@ -3502,7 +3502,7 @@ app.get('/api/quarterly-analyst-outlook', async (req, res) => {
     const symbolsParam = req.query.symbols as string;
     const requestedSymbols = symbolsParam
       ? symbolsParam.split(',').map(s => s.trim().toUpperCase()).filter(Boolean)
-      : [...DEFAULT_TECH_SYMBOLS, ...DEFAULT_SHOVEL_SYMBOLS, ...DEFAULT_US_FINANCIAL_SYMBOLS, ...DEFAULT_EU_FINANCIAL_SYMBOLS];
+      : [...DEFAULT_TECH_SYMBOLS, ...DEFAULT_SHOVEL_SYMBOLS, ...DEFAULT_AEROSPACE_DEFENSE_SYMBOLS, ...DEFAULT_US_FINANCIAL_SYMBOLS, ...DEFAULT_EU_FINANCIAL_SYMBOLS];
 
     const quarterKey = getQuarterKey();
     const data: Record<string, QuarterlyAnalystOutlookPayload> = {};
