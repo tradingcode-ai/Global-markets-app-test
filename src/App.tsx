@@ -768,20 +768,6 @@ export default function App() {
         segments: [
           { name: meta.subSector || 'Core Infrastructure', revenue: meta.marketCap, growthYoY: '+18%', beatExpectation: true }
         ],
-        quarterlyConsensus: getStockQuarterlyConsensus(rawSym, livePrice, '$', {
-          ticker: rawSym,
-          companyName: meta.name,
-          quarter: 'Q2 2026',
-          epsEstimate: 1.45,
-          revenueEstimate: 3.85
-        } as any),
-        analystOutlooks: getStockAnalystOutlooks(rawSym, livePrice, '$', {
-          ticker: rawSym,
-          companyName: meta.name,
-          sector: meta.sector || 'The Shovel Sellers',
-          epsEstimate: 1.45,
-          revenueEstimate: 3.85
-        } as any)
       };
       setSelectedResultForModal(syntheticResult);
     }
