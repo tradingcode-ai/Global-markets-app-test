@@ -3179,61 +3179,6 @@ function generateAnalystThesis(
   };
 }
 
-function generateFallbackOutlooks(
-  ticker: string,
-  targetCurrency = 'USD',
-  quarterLabel = 'Q4 2026',
-  eps?: number,
-  rev?: number,
-  currentPrice = 150
-): any[] {
-  const curSymbol = targetCurrency === 'EUR' ? '€' : '$';
-  const firms = [
-    { name: 'Morgan Stanley', rating: 'Overweight', mult: 1.28 },
-    { name: 'Goldman Sachs', rating: 'Buy', mult: 1.34 },
-    { name: 'Piper Sandler', rating: 'Overweight', mult: 1.25 }
-  ];
-
-  const now = new Date();
-  const dateStr = now.toISOString().slice(0, 10);
-  const formattedDate = formatEnglishShortDate(dateStr);
-
-  return firms.map(f => {
-    const rawTarget = Math.round(currentPrice * f.mult);
-    const targetFormatted = `${curSymbol}${rawTarget}.00`;
-    const epsStr = eps !== undefined ? `${curSymbol}${eps.toFixed(2)}` : undefined;
-    const revStr = rev !== undefined ? `${curSymbol}${rev.toFixed(1)}B` : undefined;
-    const { thesis, catalysts } = generateAnalystThesis(
-      ticker,
-      f.name,
-      f.rating,
-      targetFormatted,
-      quarterLabel,
-      curSymbol,
-      epsStr,
-      revStr
-    );
-
-    return {
-      bankName: f.name,
-      logoColor: getBankColor(f.name),
-      rating: f.rating,
-      targetPrice: targetFormatted,
-      targetPriceNumeric: rawTarget,
-      previousTargetPrice: Math.round(rawTarget * 0.95),
-      currency: targetCurrency,
-      asOfDate: dateStr,
-      lastUpdated: formattedDate,
-      timeHorizon: '12 Months',
-      nextQuarterEpsEst: epsStr,
-      nextQuarterRevEst: revStr,
-      thesis,
-      catalysts,
-      provider: 'Wall Street Institutional Coverage & SEC Filings'
-    };
-  });
-}
-
 function getQuarterKey(date = new Date()): string {
   const q = Math.floor(date.getUTCMonth() / 3) + 1;
   return `${date.getUTCFullYear()}-Q${q}`;
