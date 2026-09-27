@@ -3410,7 +3410,7 @@ async function fetchYahooQuarterlySnapshot(normalized: string, quarterKey: strin
   }
 
   // No synthetic analyst fallback. The client may use its persisted Yahoo snapshot.
-
+  return null;
 }
 
 app.get('/api/quarterly-analyst-outlook', async (req, res) => {
