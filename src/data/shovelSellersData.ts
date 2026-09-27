@@ -223,24 +223,7 @@ export const SHOVEL_SELLERS_COMPANIES: Record<string, CompanyMeta> = {
     fiftyTwoWeekLow: 110.00,
     twoHundredDayAverage: 285.00
   },
-  ASTS: {
-    ticker: 'ASTS',
-    name: 'AST SpaceMobile, Inc.',
-    sector: 'The Shovel Sellers',
-    subSector: 'Communication Equipment',
-    region: 'US',
-    country: 'United States',
-    exchange: 'NASDAQ',
-    logoBg: 'bg-violet-900',
-    logoTextColor: 'text-violet-300',
-    marketCap: '$15B',
-    currentPrice: 58.52,
-    dayChangePercent: -6.68,
-    description: 'Building the first and only space-based cellular broadband communication network accessible directly by standard mobile phones and defense networks using phased-array antennas.',
-    fiftyTwoWeekHigh: 65.00,
-    fiftyTwoWeekLow: 12.00,
-    twoHundredDayAverage: 44.50
-  },
+
 
   // ==========================================
   // 3. COMPUTER HARDWARE & STORAGE (7)
