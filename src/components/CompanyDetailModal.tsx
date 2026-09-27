@@ -24,8 +24,6 @@ import { TECH_COMPANIES } from '../data/earningsData';
 import { SHOVEL_SELLERS_COMPANIES } from '../data/shovelSellersData';
 import { FINANCIAL_COMPANIES } from '../data/financialsData';
 import { AEROSPACE_DEFENSE_COMPANIES } from '../data/aerospaceDefenseData';
-import { AEROSPACE_DEFENSE_COMPANIES } from '../data/aerospaceDefenseData';
-import { getStockQuarterlyConsensus, getStockAnalystOutlooks } from '../data/analystCoverageData';
 import { getCurrencySymbol } from '../utils/formatters';
 import { getMarketSessionInfo } from '../utils/marketSession';
 import { StockLogo } from './StockLogo';
@@ -184,13 +182,13 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
     ? (session.prePostPrice - quote.price) 
     : undefined;
 
-  // Prefer live Yahoo consensus, then the app-level synchronized snapshot, and only
-  // use the curated local dataset as a temporary fallback when Yahoo is unavailable.
-  const safeCurrentPrice = (displayPrice && displayPrice > 0) ? displayPrice : (meta?.currentPrice || 150);
-  const fallbackConsensus = getStockQuarterlyConsensus(result.ticker, safeCurrentPrice, cur, result);
-  const consensus = liveConsensus || result.quarterlyConsensus || fallbackConsensus;
-  const fallbackOutlooks = getStockAnalystOutlooks(result.ticker, safeCurrentPrice, cur, result);
-  const outlooks = liveOutlooks.length > 0 ? liveOutlooks : ((result.analystOutlooks && result.analystOutlooks.length > 0) ? result.analystOutlooks : fallbackOutlooks);
+  // Only real Yahoo data or a previously persisted Yahoo snapshot may be shown.
+  const consensus = liveConsensus?.isLiveFeed === true
+    ? liveConsensus
+    : (result.quarterlyConsensus?.isLiveFeed === true ? result.quarterlyConsensus : null);
+  const outlooks = liveOutlooks.length > 0
+    ? liveOutlooks
+    : ((result.analystOutlooks && result.analystOutlooks.length > 0) ? result.analystOutlooks : []);
   const consensusTargetCurrency = getCurrencySymbol(consensus?.targetCurrency || currencyCode);
   const consensusFinancialCurrency = consensus?.isConvertedToUsd
     ? '$'
