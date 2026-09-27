@@ -25,6 +25,7 @@ import { SHOVEL_SELLERS_COMPANIES } from '../data/shovelSellersData';
 import { FINANCIAL_COMPANIES } from '../data/financialsData';
 import { AEROSPACE_DEFENSE_COMPANIES } from '../data/aerospaceDefenseData';
 import { getCurrencySymbol } from '../utils/formatters';
+import { getStoredAnalystSnapshots } from '../services/marketDataService';
 import { getMarketSessionInfo } from '../utils/marketSession';
 import { StockLogo } from './StockLogo';
 import { FinancialHistoryChart } from './FinancialHistoryChart';
@@ -64,7 +65,11 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
         const res = await fetch(`/api/quarterly-analyst-outlook?symbols=${encodeURIComponent(ticker)}`);
         if (!res.ok) return;
         const json = await res.json();
-        const snap = json?.data?.[ticker.toUpperCase()];
+        const liveSnap = json?.data?.[ticker.toUpperCase()];
+        const cachedSnap = getStoredAnalystSnapshots()[ticker.toUpperCase()];
+        const snap = liveSnap?.isLiveFeed === true
+          ? liveSnap
+          : (cachedSnap?.isLiveFeed === true ? { ...cachedSnap, isCachedSnapshot: true } : null);
         if (!cancelled && snap) {
           setLiveConsensus(snap);
           setLiveOutlooks(Array.isArray(snap.outlooks) ? snap.outlooks : []);
