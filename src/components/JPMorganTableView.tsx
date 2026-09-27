@@ -6,7 +6,6 @@ import { SHOVEL_SELLERS_COMPANIES, SHOVEL_SUB_SECTORS } from '../data/shovelSell
 import { HYPERSCALER_COMPANIES, HYPERSCALER_SUB_SECTORS, HYPERSCALER_TICKERS } from '../data/hyperscalersData';
 import { FINANCIAL_COMPANIES } from '../data/financialsData';
 import { AEROSPACE_DEFENSE_COMPANIES, AEROSPACE_DEFENSE_TICKERS } from '../data/aerospaceDefenseData';
-import { getStockAnalystOutlooks } from '../data/analystCoverageData';
 import { StockLogo } from './StockLogo';
 import { 
   Menu, 
@@ -317,11 +316,6 @@ export const JPMorganTableView: React.FC<JPMorganTableViewProps> = ({
             { name: `${subSector} Core Systems`, revenue: `$${(price * 0.035).toFixed(2)}B`, growthYoY: '+24%', beatExpectation: true },
             { name: 'Advanced Engineering & Services', revenue: `$${(price * 0.022).toFixed(2)}B`, growthYoY: '+18%', beatExpectation: true }
           ],
-          analystOutlooks: getStockAnalystOutlooks(
-            meta.ticker, 
-            price, 
-            currency === 'EUR' ? '€' : '$'
-          ),
           priceReactionPercent: 2.1
         };
 
