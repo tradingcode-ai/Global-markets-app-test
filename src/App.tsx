@@ -14,7 +14,7 @@ import {
 import { SHOVEL_SELLERS_COMPANIES } from './data/shovelSellersData';
 import { HYPERSCALER_COMPANIES, HYPERSCALER_TICKERS } from './data/hyperscalersData';
 import { FINANCIAL_COMPANIES, FINANCIAL_RESULTS } from './data/financialsData';
-import { AEROSPACE_DEFENSE_RESULTS } from './data/aerospaceDefenseData';
+import { AEROSPACE_DEFENSE_RESULTS, AEROSPACE_DEFENSE_COMPANIES } from './data/aerospaceDefenseData';
 import { COMMODITIES_DATA } from './data/commoditiesData';
 import { getStockTechnicalMetrics } from './data/technicalData';
 import { getStockQuarterlyConsensus, getStockAnalystOutlooks } from './data/analystCoverageData';
@@ -165,7 +165,8 @@ export default function App() {
           ...Object.keys(TECH_COMPANIES),
           ...Object.keys(SHOVEL_SELLERS_COMPANIES),
           ...Object.keys(HYPERSCALER_COMPANIES),
-          ...Object.keys(FINANCIAL_COMPANIES)
+          ...Object.keys(FINANCIAL_COMPANIES),
+          ...Object.keys(AEROSPACE_DEFENSE_COMPANIES)
         ]));
         const response = await fetchQuarterlyAnalystOutlook(allSymbols);
         if (cancelled || !response?.data) return;
@@ -210,6 +211,7 @@ export default function App() {
         SHOVEL_SELLERS_COMPANIES[sym]?.name ||
         HYPERSCALER_COMPANIES[sym]?.name ||
         FINANCIAL_COMPANIES[sym]?.name ||
+        AEROSPACE_DEFENSE_COMPANIES[sym]?.name ||
         COMMODITIES_DATA.find(c => c.symbol === sym)?.name ||
         quote.companyName ||
         sym;
