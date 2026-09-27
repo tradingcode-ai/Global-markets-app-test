@@ -130,7 +130,9 @@ export default function App() {
       const livePrice = quotesRef.current[item.ticker]?.price || (item.epsEstimate ? item.epsEstimate * 25 : 120);
 
       const institutionalConsensus = getStockQuarterlyConsensus(item.ticker, livePrice, cur, item);
-      const institutionalOutlooks = getStockAnalystOutlooks(item.ticker, livePrice, cur, item);
+      const institutionalOutlooks = snap?.outlooks?.length
+        ? snap.outlooks
+        : getStockAnalystOutlooks(item.ticker, livePrice, cur, item);
 
       // Merge backend verification with rich forward consensus
       const mergedConsensus = snap ? {
