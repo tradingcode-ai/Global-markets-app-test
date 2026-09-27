@@ -108,7 +108,7 @@ export const JPMorganTableView: React.FC<JPMorganTableViewProps> = ({
       'NVDA', 'AMD', 'AVGO', 'INTC', 'HXSCF', 'SSNLF', 'MU', 'MRVL',
       'CXMT', 'SMICY', 'SMIC', 'ARM', 'TXN', 'KIOXIA', 'ASML', 'LRCX', 'KLAC', 'AMAT',
       'TER', 'NXPI', 'CBRS', 'TOELY', 'ATEYY', 'WDC', 'STX', 'DELL', 'SMCI', 'IONQ',
-      'QBTS', 'LITE', 'COHR', 'CSCO', 'SCSO', 'HPE', 'ASTS', 'CIEN'
+      'QBTS', 'LITE', 'COHR', 'CSCO', 'SCSO', 'HPE', 'CIEN'
     ]);
 
     const SHOVEL_SUB_SECTOR_MAP: Record<string, string> = {
@@ -127,7 +127,6 @@ export const JPMorganTableView: React.FC<JPMorganTableViewProps> = ({
       CSCO: 'Communication Equipment',
       SCSO: 'Communication Equipment',
       CIEN: 'Communication Equipment',
-      ASTS: 'Communication Equipment',
 
       // 3. Computer Hardware & storage (7)
       WDC: 'Computer Hardware & storage',
@@ -165,7 +164,7 @@ export const JPMorganTableView: React.FC<JPMorganTableViewProps> = ({
 
     const HYPERSCALER_SUB_SECTOR_MAP: Record<string, string> = {
       GOOGL: 'Hyperscalers', MSFT: 'Hyperscalers', AMZN: 'Hyperscalers', ORCL: 'Hyperscalers', META: 'Hyperscalers',
-      SPCX: 'Neo Clouds', NBIS: 'Neo Clouds', CRWV: 'Neo Clouds', IREN: 'Neo Clouds'
+      NBIS: 'Neo Clouds', CRWV: 'Neo Clouds', IREN: 'Neo Clouds'
     };
 
     // Equities - deduplicate by ticker to guarantee unique keys and records
