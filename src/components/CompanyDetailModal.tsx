@@ -559,7 +559,7 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
                     Forward Quarter: {cleanQuarterLabel}
                   </span>
                   <span className={`${consensus.isLiveFeed !== false ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-200'} border px-2 py-0.5 rounded font-medium`}>
-                    {consensus.isLiveFeed !== false ? 'Yahoo Finance Live' : 'Verified Consensus'}
+                    {consensus.isCachedSnapshot ? 'Yahoo Finance — Cached' : 'Yahoo Finance Live'}
                   </span>
                   {consensus.monthlyRevisionDate && (
                     <span className="bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded">
@@ -570,7 +570,7 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
               </div>
 
               <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">
-                Live analyst consensus from Yahoo Finance earnings estimates. The displayed quarter follows Yahoo's current earnings-estimate period and is refreshed automatically.
+                Analyst consensus from Yahoo Finance earnings estimates. Live data is refreshed automatically; when Yahoo is temporarily unavailable, the last verified Yahoo snapshot is shown and labeled as cached.
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
@@ -677,7 +677,7 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
                     Forward Quarter: {cleanQuarterLabel}
                   </span>
                   <span className={`${consensus?.isLiveFeed !== false ? 'text-blue-700 bg-blue-50 border-blue-200' : 'text-slate-700 bg-slate-100 border-slate-200'} border px-2 py-0.5 rounded font-bold`}>
-                    {consensus?.isLiveFeed !== false ? 'Yahoo Finance Coverage' : 'Institutional Consensus'}
+                    {consensus?.isCachedSnapshot ? 'Yahoo Finance — Cached' : 'Yahoo Finance Coverage'}
                   </span>
                 </div>
               </div>
