@@ -23,6 +23,7 @@ import {
 import { TECH_COMPANIES } from '../data/earningsData';
 import { SHOVEL_SELLERS_COMPANIES } from '../data/shovelSellersData';
 import { FINANCIAL_COMPANIES } from '../data/financialsData';
+import { AEROSPACE_DEFENSE_COMPANIES } from '../data/aerospaceDefenseData';
 import { getStockQuarterlyConsensus, getStockAnalystOutlooks } from '../data/analystCoverageData';
 import { getCurrencySymbol } from '../utils/formatters';
 import { getMarketSessionInfo } from '../utils/marketSession';
@@ -124,7 +125,7 @@ export const CompanyDetailModal: React.FC<CompanyDetailModalProps> = ({
 
   if (!result) return null;
 
-  const meta = TECH_COMPANIES[result.ticker] || SHOVEL_SELLERS_COMPANIES[result.ticker] || FINANCIAL_COMPANIES[result.ticker];
+  const meta = TECH_COMPANIES[result.ticker] || SHOVEL_SELLERS_COMPANIES[result.ticker] || FINANCIAL_COMPANIES[result.ticker] || AEROSPACE_DEFENSE_COMPANIES[result.ticker];
   const isReported = result.status === 'reported' || result.status === 'reporting_today';
   const epsBeaten = isReported && (result.epsActual ?? 0) >= result.epsEstimate;
   const revBeaten = isReported && (result.revenueActual ?? 0) >= result.revenueEstimate;
