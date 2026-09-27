@@ -14,6 +14,7 @@ import {
 import { SHOVEL_SELLERS_COMPANIES } from './data/shovelSellersData';
 import { HYPERSCALER_COMPANIES, HYPERSCALER_TICKERS } from './data/hyperscalersData';
 import { FINANCIAL_COMPANIES, FINANCIAL_RESULTS } from './data/financialsData';
+import { AEROSPACE_DEFENSE_RESULTS } from './data/aerospaceDefenseData';
 import { COMMODITIES_DATA } from './data/commoditiesData';
 import { getStockTechnicalMetrics } from './data/technicalData';
 import { getStockQuarterlyConsensus, getStockAnalystOutlooks } from './data/analystCoverageData';
@@ -67,7 +68,7 @@ import {
 
 export default function App() {
   const [results, setResults] = useState<QuarterlyResult[]>(() => {
-    const combined = [...INITIAL_EARNINGS_RESULTS, ...FINANCIAL_RESULTS];
+    const combined = [...INITIAL_EARNINGS_RESULTS, ...FINANCIAL_RESULTS, ...AEROSPACE_DEFENSE_RESULTS];
     return combined.map(item => {
       const base = HYPERSCALER_TICKERS.has(item.ticker) 
         ? { ...item, sector: 'Hyperscalers & Neo Clouds' as any, subSector: item.subSector || (['GOOGL','MSFT','AMZN','ORCL','META'].includes(item.ticker) ? 'Hyperscalers' : 'Neo Clouds') } 
