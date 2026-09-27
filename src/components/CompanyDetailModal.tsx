@@ -24,6 +24,7 @@ import { TECH_COMPANIES } from '../data/earningsData';
 import { SHOVEL_SELLERS_COMPANIES } from '../data/shovelSellersData';
 import { FINANCIAL_COMPANIES } from '../data/financialsData';
 import { AEROSPACE_DEFENSE_COMPANIES } from '../data/aerospaceDefenseData';
+import { AEROSPACE_DEFENSE_COMPANIES } from '../data/aerospaceDefenseData';
 import { getStockQuarterlyConsensus, getStockAnalystOutlooks } from '../data/analystCoverageData';
 import { getCurrencySymbol } from '../utils/formatters';
 import { getMarketSessionInfo } from '../utils/marketSession';
