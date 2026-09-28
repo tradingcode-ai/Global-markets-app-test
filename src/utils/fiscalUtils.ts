@@ -279,6 +279,21 @@ export function getOfficialFiscalQuarterLabel(
     }
   }
 
+  // 5. Micron fiscal calendar (fiscal year ends in late August/early September)
+  // Nov-Jan = Q1, Feb-Apr = Q2, May-Jul = Q3, Aug-Oct = Q4.
+  // Micron's fiscal periods end on a Thursday near these month boundaries.
+  if (sym === 'MU') {
+    if (month >= 11 || month <= 1) {
+      return `Fiscaal Q1 ${month === 1 ? calYear : calYear + 1}`;
+    } else if (month >= 2 && month <= 4) {
+      return `Fiscaal Q2 ${calYear}`;
+    } else if (month >= 5 && month <= 7) {
+      return `Fiscaal Q3 ${calYear}`;
+    } else {
+      return `Fiscaal Q4 ${calYear}`;
+    }
+  }
+
   // 5. Apple fiscal calendar (Ends late September)
   // Oct-Dec = Q1 FY+1, Jan-Mar = Q2 FY, Apr-Jun = Q3 FY, Jul-Sep = Q4 FY
   if (sym === 'AAPL') {

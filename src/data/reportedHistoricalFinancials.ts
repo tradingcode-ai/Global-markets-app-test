@@ -13,6 +13,7 @@ export interface HistoricalQuarterRecord {
   netIncome: number;      // In Billions
   currency?: string;
   sourceCurrency?: string;
+  source?: 'verified' | 'generated';
 }
 
 // 1. NVIDIA (FY ends late January; real reported SEC 10-Q / 10-K numbers)
@@ -179,7 +180,8 @@ function generateCalendarTimeline(
       netIncome: Number((baseNet * item.mult).toFixed(2)),
       eps: Number((baseEps * item.mult).toFixed(2)),
       freeCashFlow: Number((baseFcf * item.mult).toFixed(2)),
-      currency
+      currency,
+      source: 'generated'
     };
   });
 }

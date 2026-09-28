@@ -32,7 +32,6 @@ import {
 import { CompanyFinancialHistory, QuarterlyFinancialPoint, FinancialMetricKey } from '../types';
 import { getCurrencySymbol } from '../utils/formatters';
 import {
-  isSameFiscalQuarter,
   getOfficialFiscalQuarterLabel,
   getOfficialReportedReleaseDate,
   formatQuarterReleaseLabel,
@@ -65,6 +64,8 @@ export const FinancialHistoryChart: React.FC<FinancialHistoryChartProps> = ({
   // Interactive selected quarter clicked by the user
   const [selectedQuarter, setSelectedQuarter] = useState<QuarterlyFinancialPoint | null>(null);
 
+  const FINANCIAL_SNAPSHOT_KEY = `global-markets-financial-snapshot:${ticker.toUpperCase()}`;
+
   // Fetch financial history
   const fetchFinancials = async (force: boolean = false) => {
     if (force) setRefreshing(true);
@@ -76,9 +77,49 @@ export const FinancialHistoryChart: React.FC<FinancialHistoryChartProps> = ({
       if (res.ok) {
         const json: CompanyFinancialHistory = await res.json();
         setData(json);
+        try {
+          window.localStorage.setItem(FINANCIAL_SNAPSHOT_KEY, JSON.stringify({
+            ...json,
+            snapshotSavedAt: new Date().toISOString(),
+            isCachedSnapshot: false
+          }));
+        } catch {
+          // Ignore unavailable/full browser storage.
+        }
+      } else {
+        try {
+          const raw = window.localStorage.getItem(FINANCIAL_SNAPSHOT_KEY);
+          if (raw) {
+            const cached = JSON.parse(raw) as CompanyFinancialHistory;
+            if (cached?.quarters?.length) {
+              setData({
+                ...cached,
+                isLive: false,
+                provider: 'Yahoo Finance — Cached Snapshot'
+              } as CompanyFinancialHistory);
+            }
+          }
+        } catch {
+          // No usable local snapshot.
+        }
       }
     } catch (err) {
       console.warn('Failed to load financial history:', err);
+      try {
+        const raw = window.localStorage.getItem(FINANCIAL_SNAPSHOT_KEY);
+        if (raw) {
+          const cached = JSON.parse(raw) as CompanyFinancialHistory;
+          if (cached?.quarters?.length) {
+            setData({
+              ...cached,
+              isLive: false,
+              provider: 'Yahoo Finance — Cached Snapshot'
+            });
+          }
+        }
+      } catch {
+        // No usable local snapshot.
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -118,9 +159,12 @@ export const FinancialHistoryChart: React.FC<FinancialHistoryChartProps> = ({
         reportedReleaseDate
       };
 
-      // Check if an existing quarter in our deduped list represents the same quarterly report
-      const existingIdx = deduped.findIndex(item => 
-        (item.fiscalDate && q.fiscalDate && isSameFiscalQuarter(item.fiscalDate, q.fiscalDate)) ||
+      // Match the same fiscal report, not merely dates within 45 days.
+      // A 45-day proximity rule can merge adjacent fiscal quarters for companies
+      // whose fiscal calendar does not follow the calendar quarter.
+      const existingIdx = deduped.findIndex(item =>
+        (item.fiscalQuarterLabel && q.fiscalQuarterLabel && item.fiscalQuarterLabel === q.fiscalQuarterLabel) ||
+        (item.fiscalDate && q.fiscalDate && item.fiscalDate === q.fiscalDate) ||
         (item.displayLabel && q.displayLabel && item.displayLabel === q.displayLabel)
       );
 
@@ -298,8 +342,8 @@ export const FinancialHistoryChart: React.FC<FinancialHistoryChartProps> = ({
           </div>
           <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 mt-1">
             <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <strong className="text-slate-700">Live gesynchroniseerd</strong> via Yahoo Finance
+              <span className={`w-2 h-2 rounded-full ${data?.isLive === false ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`}></span>
+              <strong className="text-slate-700">{data?.isLive === false ? 'Snapshot actief' : 'Live gesynchroniseerd'}</strong> via {data?.isLive === false ? 'Yahoo Finance — laatste bekende data' : 'Yahoo Finance'}
             </span>
             <span>•</span>
             <span className="font-mono-code text-slate-400">

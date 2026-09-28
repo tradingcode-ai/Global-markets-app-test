@@ -4605,7 +4605,7 @@ app.get('/api/financials-history/:ticker', async (req, res) => {
 
     const yahooSymbol = YAHOO_SYMBOL_MAP[rawTicker] || rawTicker;
 
-    const baselineQuarters = getReportedHistoricalQuarters(rawTicker);
+    const baselineQuarters = getReportedHistoricalQuarters(rawTicker).filter(q => q.source !== 'generated');
     const liveYahooQuarters = await fetchLiveYahooQuarterlyFinancials(yahooSymbol, rawTicker);
     if ((!liveYahooQuarters || liveYahooQuarters.length === 0) && (!baselineQuarters || baselineQuarters.length === 0)) {
       return res.status(503).json({
@@ -4617,18 +4617,22 @@ app.get('/api/financials-history/:ticker', async (req, res) => {
 
     const quartersList: any[] = [];
 
-    // Helper to find index of same quarter (within 45 days OR matching releaseLabel / quarter)
-    const findSameQuarterIndex = (qDate?: string, qLabel?: string, qQuarter?: string) => {
+    // Match by fiscal identity first. Do not merge different fiscal quarters merely
+    // because their period-end dates happen to fall within 45 days.
+    const getFiscalIdentity = (qDate?: string, qQuarter?: string, qFiscalYear?: number, qQuarterNum?: number) =>
+      qDate
+        ? (qFiscalYear && qQuarterNum
+            ? getOfficialFiscalQuarterLabel(rawTicker, qDate, undefined, qFiscalYear, qQuarterNum)
+            : getOfficialFiscalQuarterLabel(rawTicker, qDate))
+        : (qQuarter || '');
+
+    const findSameQuarterIndex = (qDate?: string, qLabel?: string, qQuarter?: string, qFiscalYear?: number, qQuarterNum?: number) => {
+      const identity = getFiscalIdentity(qDate, qQuarter, qFiscalYear, qQuarterNum);
       return quartersList.findIndex(existing => {
-        if (qDate && existing.fiscalDate && isSameFiscalQuarter(existing.fiscalDate, qDate)) {
-          return true;
-        }
-        if (qLabel && existing.releaseLabel && existing.releaseLabel === qLabel) {
-          return true;
-        }
-        if (qQuarter && existing.quarter && existing.quarter === qQuarter) {
-          return true;
-        }
+        const existingIdentity = getFiscalIdentity(existing.fiscalDate, existing.quarter, existing.fiscalYear, existing.quarterNum);
+        if (identity && existingIdentity && identity === existingIdentity) return true;
+        if (qDate && existing.fiscalDate && qDate === existing.fiscalDate) return true;
+        if (qLabel && existing.releaseLabel && existing.releaseLabel === qLabel) return true;
         return false;
       });
     };
@@ -4639,7 +4643,7 @@ app.get('/api/financials-history/:ticker', async (req, res) => {
       const fiscalQuarterLabel = getOfficialFiscalQuarterLabel(rawTicker, b.fiscalDate, b.quarter, b.fiscalYear, b.quarterNum);
       const reportedReleaseDate = getOfficialReportedReleaseDate(rawTicker, b.fiscalDate);
 
-      const existingIdx = findSameQuarterIndex(b.fiscalDate, releaseLabel, b.quarter);
+      const existingIdx = findSameQuarterIndex(b.fiscalDate, releaseLabel, b.quarter, b.fiscalYear, b.quarterNum);
       if (existingIdx >= 0) {
         quartersList[existingIdx] = {
           ...quartersList[existingIdx],
@@ -4664,12 +4668,16 @@ app.get('/api/financials-history/:ticker', async (req, res) => {
     if (liveYahooQuarters && liveYahooQuarters.length > 0) {
       for (const yq of liveYahooQuarters) {
         const releaseLabel = yq.releaseLabel || formatQuarterReleaseLabel(yq.fiscalDate, yq.quarter);
-        const existingIdx = findSameQuarterIndex(yq.fiscalDate, releaseLabel, yq.quarter);
+        const fiscalIdentity = getOfficialFiscalQuarterLabel(rawTicker, yq.fiscalDate);
+        const fiscalMatch = fiscalIdentity.match(/^Fiscaal Q([1-4]) (\d{4})$/);
+        const yahooFiscalQuarterNum = fiscalMatch ? Number(fiscalMatch[1]) : undefined;
+        const yahooFiscalYear = fiscalMatch ? Number(fiscalMatch[2]) : undefined;
+        const existingIdx = findSameQuarterIndex(yq.fiscalDate, releaseLabel, undefined, yahooFiscalYear, yahooFiscalQuarterNum);
 
         if (existingIdx >= 0) {
           const existing = quartersList[existingIdx];
-          const mergedFiscalYear = existing.fiscalYear || yq.fiscalYear;
-          const mergedQuarterNum = existing.quarterNum || yq.quarterNum;
+          const mergedFiscalYear = existing.fiscalYear || yahooFiscalYear || yq.fiscalYear;
+          const mergedQuarterNum = existing.quarterNum || yahooFiscalQuarterNum || yq.quarterNum;
           const mergedQuarter = existing.quarter || yq.quarter;
           const mergedFiscalDate = existing.fiscalDate || yq.fiscalDate;
           const fiscalQuarterLabel = existing.fiscalQuarterLabel || getOfficialFiscalQuarterLabel(rawTicker, mergedFiscalDate, mergedQuarter, mergedFiscalYear, mergedQuarterNum);
@@ -4689,12 +4697,12 @@ app.get('/api/financials-history/:ticker', async (req, res) => {
             eps: (yq.eps !== undefined && yq.eps !== null && yq.eps !== 0) ? yq.eps : existing.eps,
             releaseLabel: existing.releaseLabel || releaseLabel,
             displayLabel: existing.displayLabel || releaseLabel,
-            fiscalQuarterLabel,
+            fiscalQuarterLabel: fiscalIdentity,
             reportedReleaseDate,
             isLive: true
           };
         } else {
-          const fiscalQuarterLabel = getOfficialFiscalQuarterLabel(rawTicker, yq.fiscalDate, yq.quarter, yq.fiscalYear, yq.quarterNum);
+          const fiscalQuarterLabel = fiscalIdentity;
           const reportedReleaseDate = getOfficialReportedReleaseDate(rawTicker, yq.fiscalDate);
           quartersList.push({
             ...yq,
