@@ -64,7 +64,7 @@ export const FinancialHistoryChart: React.FC<FinancialHistoryChartProps> = ({
   // Interactive selected quarter clicked by the user
   const [selectedQuarter, setSelectedQuarter] = useState<QuarterlyFinancialPoint | null>(null);
 
-  const FINANCIAL_SNAPSHOT_KEY = `global-markets-financial-snapshot:${ticker.toUpperCase()}`;
+  const FINANCIAL_SNAPSHOT_KEY = `global-markets-financial-snapshot-v2:${ticker.toUpperCase()}`;
 
   // Fetch financial history
   const fetchFinancials = async (force: boolean = false) => {
